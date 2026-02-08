@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Master</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='spider-man-logo.png') }}">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="main-wrapper">
+        <div class="container">
+            <header>
+                <h1>
+                    <img src="{{ url_for('static', filename='spider-man-logo.png') }}" alt="Logo" class="heading-icon">
+                    Task Master
+                </h1>
+                <p class="subtitle">Focus on your day.</p>
+            </header>
+
+            <form action="/add" method="POST" class="input-group">
+                <div class="input-wrapper">
+                    <input type="text" name="title" placeholder="What needs to be done?" required>
+                </div>
+                
+                <div class="controls-wrapper">
+                    <select name="category">
+                        {% for cat in categories %}
+                            <option value="{{ cat[0] }}">{{ cat[1] }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="datetime-local" name="due_date" required>
+                    <button type="submit" class="btn-add">+</button>
+                </div>
+            </form>
+
+            <div class="task-list-container">
+                {% if todos|length == 0 %}
+                    <div class="empty-state">
+                        <p>No tasks yet. Enjoy your day! ☀️</p>
+                    </div>
+                {% else %}
+                    <ul class="task-list">
+                        {% for todo in todos %}
+                        <li class="task-item {% if todo[2] %}completed{% endif %}">
+                            
+                            <div class="task-info">
+                                <div class="task-header">
+                                    <span class="badge badge-{{ todo[4]|lower }}">{{ todo[4] }}</span>
+                                    <span class="task-title">{{ todo[1] }}</span>
+                                </div>
+                                <div class="task-meta">
+                                    📅 {{ todo[3] }}
+                                </div>
+                            </div>
+
+                            <div class="task-actions">
+                                {% if not todo[2] %}
+                                <a href="/complete/{{ todo[0] }}" class="btn-icon btn-check" title="Complete">
+                                    ✓
+                                </a>
+                                {% endif %}
+                                <a href="/delete/{{ todo[0] }}" class="btn-icon btn-delete" title="Delete">
+                                    ✕
+                                </a>
+                            </div>
+                        </li>
+
+                        <script>
+                            (function() {
+                                var isCompleted = "{{ todo[2] }}" == "True";
+                                if (!isCompleted) {
+                                    var dueString = "{{ todo[3] }}"; 
+                                    var dueDate = new Date(dueString).getTime();
+                                    var now = new Date().getTime();
+                                    var timeDiff = dueDate - now;
+
+                                    if (timeDiff > 0) {
+                                        setTimeout(function() {
+                                            if (Notification.permission === "granted") {
+                                                new Notification("Reminder: {{ todo[1] }}");
+                                            } 
+                                        }, timeDiff);
+                                    }
+                                }
+                            })();
+                        </script>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

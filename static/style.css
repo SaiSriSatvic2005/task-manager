@@ -1,0 +1,263 @@
+/* --- Global Reset & Typography --- */
+:root {
+    --primary: #4F46E5;       /* Modern Indigo */
+    --primary-hover: #4338ca;
+    --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --danger: #ef4444;
+    --success: #10b981;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text-dark);
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-wrapper {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+/* --- New Heading Icon --- */
+.heading-icon {
+    height: 1.2em; /* Makes the icon the same height as the text */
+    width: auto;   /* Maintains the aspect ratio */
+    vertical-align: middle; /* Aligns it nicely with the text center */
+    margin-right: 0.5rem; /* Adds a little space between icon and text */
+    /* Optional: add a cool red glow to match the image */
+    filter: drop-shadow(0 0 2px rgba(220, 53, 69, 0.5)); 
+}
+
+/* Ensure the h1 is flex to align items perfectly */
+h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* ... keep existing h1 styles below ... */
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    color: #111827;
+}
+/* --- Card Container --- */
+.container {
+    background: white;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    color: #111827;
+}
+
+.subtitle {
+    color: var(--text-light);
+    margin-top: 0.5rem;
+}
+
+/* --- Form Styling --- */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: #f9fafb;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    border: 1px solid #e5e7eb;
+}
+
+.input-wrapper input {
+    width: 95%; /* Account for padding */
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input-wrapper input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.controls-wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+select, input[type="datetime-local"] {
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: white;
+    font-family: inherit;
+    color: var(--text-dark);
+    flex-grow: 1;
+}
+
+.btn-add {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 5px; /* Adjust visual alignment of + */
+}
+
+.btn-add:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+/* --- Task List --- */
+.task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.task-item {
+    background: white;
+    border-bottom: 1px solid #f3f4f6;
+    padding: 1rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: opacity 0.3s;
+}
+
+.task-item:last-child {
+    border-bottom: none;
+}
+
+.task-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.task-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.task-title {
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.task-meta {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* --- Badges --- */
+.badge {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 99px;
+    letter-spacing: 0.5px;
+}
+
+/* Auto-color badges based on name */
+.badge-work { background: #e0e7ff; color: #4338ca; }
+.badge-personal { background: #d1fae5; color: #065f46; }
+.badge-school { background: #fef3c7; color: #92400e; }
+.badge-urgent { background: #fee2e2; color: #991b1b; }
+
+/* Default fallback */
+.badge { background: #f3f4f6; color: #4b5563; }
+
+/* --- Completed State --- */
+.task-item.completed .task-title {
+    text-decoration: line-through;
+    color: #d1d5db;
+}
+.task-item.completed .badge {
+    opacity: 0.5;
+}
+
+/* --- Action Buttons (Icons) --- */
+.task-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.btn-check {
+    background: #ecfdf5;
+    color: var(--success);
+    border: 1px solid #a7f3d0;
+}
+
+.btn-check:hover {
+    background: var(--success);
+    color: white;
+}
+
+.btn-delete {
+    background: #fef2f2;
+    color: var(--danger);
+    border: 1px solid #fecaca;
+}
+
+.btn-delete:hover {
+    background: var(--danger);
+    color: white;
+}
+
+/* --- Empty State --- */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-light);
+    font-style: italic;
+}
