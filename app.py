@@ -4,6 +4,29 @@ from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
+def init_db():
+    """Initialize database tables on startup."""
+    conn = get_db_connection()
+    cur = conn.cursor()
+    try:
+        # 1. Create Categories Table
+        cur.execute("CREATE TABLE IF NOT EXISTS categories (id SERIAL PRIMARY KEY, name VARCHAR(50) NOT NULL);")
+        
+        # 2. Add Default Categories (Only if empty)
+        cur.execute("SELECT COUNT(*) FROM categories")
+        if cur.fetchone()[0] == 0:
+            cur.execute("INSERT INTO categories (name) VALUES ('Work'), ('Personal'), ('School'), ('Urgent');")
+        
+        # 3. Create Todos Table
+        cur.execute("CREATE TABLE IF NOT EXISTS todos (id SERIAL PRIMARY KEY, title VARCHAR(100) NOT NULL, status BOOLEAN DEFAULT FALSE, due_date TIMESTAMP, category_id INTEGER REFERENCES categories(id));")
+        
+        conn.commit()
+    except Exception as e:
+        print(f"Database initialization error: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
 def get_db_connection():
     # 1. Try to get the URL from the cloud environment
     db_url = os.environ.get('DATABASE_URL')
@@ -20,6 +43,9 @@ def get_db_connection():
             password="KamalHassan@2005"
         )
     return conn
+
+# Initialize database tables on startup
+init_db()
 
 @app.route('/')
 def index():
