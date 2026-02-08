@@ -86,5 +86,32 @@ def delete(id):
     conn.close()
     return redirect(url_for('index'))
 
+# --- TEMPORARY SETUP ROUTE ---
+@app.route('/setup')
+def setup_db():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    
+    try:
+        # 1. Create Categories Table
+        cur.execute("CREATE TABLE IF NOT EXISTS categories (id SERIAL PRIMARY KEY, name VARCHAR(50) NOT NULL);")
+        
+        # 2. Add Default Categories (Only if empty)
+        cur.execute("SELECT COUNT(*) FROM categories")
+        if cur.fetchone()[0] == 0:
+            cur.execute("INSERT INTO categories (name) VALUES ('Work'), ('Personal'), ('School'), ('Urgent');")
+        
+        # 3. Create Todos Table
+        cur.execute("CREATE TABLE IF NOT EXISTS todos (id SERIAL PRIMARY KEY, title VARCHAR(100) NOT NULL, status BOOLEAN DEFAULT FALSE, due_date TIMESTAMP, category_id INTEGER REFERENCES categories(id));")
+        
+        conn.commit()
+        return "Database Tables Created Successfully! You can now go to the home page."
+    except Exception as e:
+        return f"An error occurred: {e}"
+    finally:
+        cur.close()
+        conn.close()
+
+
 if __name__ == '__main__':
     app.run(debug=True)
