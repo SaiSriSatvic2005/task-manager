@@ -67,31 +67,68 @@
                                 </a>
                             </div>
                         </li>
-
-                        <script>
-                            (function() {
-                                var isCompleted = "{{ todo[2] }}" == "True";
-                                if (!isCompleted) {
-                                    var dueString = "{{ todo[3] }}"; 
-                                    var dueDate = new Date(dueString).getTime();
-                                    var now = new Date().getTime();
-                                    var timeDiff = dueDate - now;
-
-                                    if (timeDiff > 0) {
-                                        setTimeout(function() {
-                                            if (Notification.permission === "granted") {
-                                                new Notification("Reminder: {{ todo[1] }}");
-                                            } 
-                                        }, timeDiff);
-                                    }
-                                }
-                            })();
-                        </script>
                         {% endfor %}
                     </ul>
                 {% endif %}
             </div>
         </div>
     </div>
+
+    <script>
+        // Request notification permission on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if ('Notification' in window) {
+                if (Notification.permission === 'default') {
+                    Notification.requestPermission().then(function(permission) {
+                        if (permission === 'granted') {
+                            console.log('Notifications enabled!');
+                        }
+                    });
+                }
+            }
+        });
+
+        // Setup reminders for all pending tasks
+        function setupReminders() {
+            {% for todo in todos %}
+            (function() {
+                var isCompleted = {{ 'true' if todo[2] else 'false' }};
+                if (!isCompleted && Notification.permission === 'granted') {
+                    var dueString = "{{ todo[3] }}";
+                    var dueDate = new Date(dueString).getTime();
+                    var now = new Date().getTime();
+                    var timeDiff = dueDate - now;
+
+                    // Notify 5 minutes before due
+                    var reminderTime = timeDiff - (5 * 60 * 1000);
+                    
+                    if (reminderTime > 0) {
+                        setTimeout(function() {
+                            new Notification("⏰ Task Due Soon!", {
+                                body: "{{ todo[1] }} is due in 5 minutes",
+                                icon: "{{ url_for('static', filename='spider-man-logo.png') }}"
+                            });
+                        }, reminderTime);
+                    }
+                    
+                    // Also notify at due time
+                    if (timeDiff > 0) {
+                        setTimeout(function() {
+                            new Notification("🔔 Task Due Now!", {
+                                body: "{{ todo[1] }}",
+                                icon: "{{ url_for('static', filename='spider-man-logo.png') }}"
+                            });
+                        }, timeDiff);
+                    }
+                }
+            })();
+            {% endfor %}
+        }
+
+        // Run after permission is granted
+        if (Notification.permission === 'granted') {
+            setupReminders();
+        }
+    </script>
 </body>
 </html>
