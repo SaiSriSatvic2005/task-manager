@@ -75,19 +75,6 @@
     </div>
 
     <script>
-        // Request notification permission on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            if ('Notification' in window) {
-                if (Notification.permission === 'default') {
-                    Notification.requestPermission().then(function(permission) {
-                        if (permission === 'granted') {
-                            console.log('Notifications enabled!');
-                        }
-                    });
-                }
-            }
-        });
-
         // Setup reminders for all pending tasks
         function setupReminders() {
             {% for todo in todos %}
@@ -104,7 +91,7 @@
                     
                     if (reminderTime > 0) {
                         setTimeout(function() {
-                            new Notification("⏰ Task Due Soon!", {
+                            new Notification("Task Due Soon!", {
                                 body: "{{ todo[1] }} is due in 5 minutes",
                                 icon: "{{ url_for('static', filename='spider-man-logo.png') }}"
                             });
@@ -114,7 +101,7 @@
                     // Also notify at due time
                     if (timeDiff > 0) {
                         setTimeout(function() {
-                            new Notification("🔔 Task Due Now!", {
+                            new Notification("Task Due Now!", {
                                 body: "{{ todo[1] }}",
                                 icon: "{{ url_for('static', filename='spider-man-logo.png') }}"
                             });
@@ -125,10 +112,21 @@
             {% endfor %}
         }
 
-        // Run after permission is granted
-        if (Notification.permission === 'granted') {
-            setupReminders();
-        }
+        // Request notification permission on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if ('Notification' in window) {
+                if (Notification.permission === 'granted') {
+                    setupReminders();
+                } else if (Notification.permission === 'default') {
+                    Notification.requestPermission().then(function(permission) {
+                        if (permission === 'granted') {
+                            console.log('Notifications enabled!');
+                            setupReminders();
+                        }
+                    });
+                }
+            }
+        });
     </script>
 </body>
 </html>
